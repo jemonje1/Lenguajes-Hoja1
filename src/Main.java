@@ -68,15 +68,10 @@ public class Main {
     }
 
     private static int precedence(char c) {
-        switch (c) {
-            case '+':
-            case '-':
-                return 1;
-            case '*':
-            case '/':
-                return 2;
-            default:
-                return 0;
-        }
+        return switch (c) {
+            case '+', '-' -> 1;
+            case '*', '/' -> 2;
+            default -> 0;
+        };
     }
 }
