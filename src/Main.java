@@ -7,11 +7,14 @@ import java.util.Stack;
 public class Main {
     public static void main(String[] args) {
         String input;
-        input="2+1*3";
+        input="3+4*2+5";
         String postfix = ShuntingYard(input);
         System.out.println("El postfix: ");
         System.out.println(postfix);
-        System.out.println("El infix: ");
+        System.out.println("Evaluacion");
+        Stack<Integer> stack = new Stack<>();
+        int evaluate = evaluatePostfix(postfix,0, stack);
+        System.out.println(evaluate);
 
     }
 
@@ -58,20 +61,53 @@ public class Main {
         return postfix;
     }
 
-    //Outfix a infix, tu
-    public String Outfix(String input) {
-        return input;
-    }
-
     private static boolean isOperator(char c){
-        return c == '+' || c == '-' || c == '*' || c == '/';
+        return c == '+' || c == '-' || c == '*' || c == '/' || c == '^';
     }
 
     private static int precedence(char c) {
         return switch (c) {
             case '+', '-' -> 1;
             case '*', '/' -> 2;
+            case '^'->3;
             default -> 0;
         };
+    }
+
+
+    private static int evaluatePostfix(String tokens, int index, Stack<Integer> stack) {
+        if (index >= tokens.length()) {
+            return stack.pop();
+        }
+        char token = tokens.charAt(index);
+        if (isOperator(token)) {
+            if (stack.size() < 2) {
+                return stack.pop();
+            }
+            int val2 = stack.pop();
+            int val1 = stack.pop();
+            int result = applyOperation(token, val1, val2);
+            stack.push(result);
+        } else {
+            stack.push(Integer.parseInt(String.valueOf(token)));
+        }
+        return evaluatePostfix(tokens, index + 1, stack);
+    }
+
+    private static int applyOperation(char op, int val1, int val2) {
+        switch(op) {
+            case '+':
+                return val1 + val2;
+            case '-':
+                return val1 - val2;
+            case '*':
+                return val1 * val2;
+            case '/':
+                return val1 / val2;
+            case '^':
+                return val1 ^ val2;
+            default:
+                return 0;
+        }
     }
 }
