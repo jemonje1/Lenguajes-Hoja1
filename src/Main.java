@@ -1,21 +1,28 @@
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import java.nio.file.Paths;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        String input;
-        input="3+4*2+5";
-        String postfix = ShuntingYard(input);
-        System.out.println("El postfix: ");
-        System.out.println(postfix);
-        System.out.println("Evaluacion");
-        Stack<Integer> stack = new Stack<>();
-        int evaluate = evaluatePostfix(postfix,0, stack);
-        System.out.println(evaluate);
-
+        //Lectura de archivos
+        try {
+            List<String> lines = Files.readAllLines(Paths.get("entrada.txt"));
+            for(String line : lines) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(line);
+                String infix = sb.toString();
+                String postfix = ShuntingYard(infix);
+                System.out.println("Entrada: " + infix+"\n");
+                System.out.println(postfix);
+                double result = evaluatePostfix(postfix,0,new Stack<>());
+                System.out.println("Expresin evaluada: "+result+"\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static String ShuntingYard(String input) {
@@ -65,7 +72,7 @@ public class Main {
         return c == '+' || c == '-' || c == '*' || c == '/' || c == '^';
     }
 
-    private static int precedence(char c) {
+    private static double precedence(char c) {
         return switch (c) {
             case '+', '-' -> 1;
             case '*', '/' -> 2;
@@ -74,8 +81,7 @@ public class Main {
         };
     }
 
-
-    private static int evaluatePostfix(String tokens, int index, Stack<Integer> stack) {
+    private static double evaluatePostfix(String tokens, int index, Stack<Double> stack) {
         if (index >= tokens.length()) {
             return stack.pop();
         }
@@ -84,17 +90,17 @@ public class Main {
             if (stack.size() < 2) {
                 return stack.pop();
             }
-            int val2 = stack.pop();
-            int val1 = stack.pop();
-            int result = applyOperation(token, val1, val2);
+            double val2 = stack.pop();
+            double val1 = stack.pop();
+            double result = applyOperation(token, val1, val2);
             stack.push(result);
         } else {
-            stack.push(Integer.parseInt(String.valueOf(token)));
+            stack.push((double) Integer.parseInt(String.valueOf(token)));
         }
         return evaluatePostfix(tokens, index + 1, stack);
     }
 
-    private static int applyOperation(char op, int val1, int val2) {
+    private static double applyOperation(char op, double val1, double val2) {
         switch(op) {
             case '+':
                 return val1 + val2;
@@ -105,7 +111,7 @@ public class Main {
             case '/':
                 return val1 / val2;
             case '^':
-                return val1 ^ val2;
+                return (double)Math.pow(val1, val2);
             default:
                 return 0;
         }
