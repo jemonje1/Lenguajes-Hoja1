@@ -174,10 +174,7 @@ public class Main {
         }
     }
 
-    /*Se utilizó la ayuda de IA para la creación de este
-    metodo para validar nuestras entradas a partir de nuestro Regex, con el siguiente prompt "Mira esta es mi regex de validacion para infix
-    * ^\s*(\(*\s*\d+\s*\)*\s*([\+\-\*\/\^]\s*\(*\s*\d+\s*\)*\s*)*)\s*$" como pudiera aplicarlo a mi codigo en java? y pudieras
-    explicar cada metodo de expresiones regex" a lo que la IA respondió:*/
+    //Para validar nuestras entradas a partir de nuestro Regex  ^\s*(\(*\s*\d+\s*\)*\s*([\+\-\*\/\^]\s*\(*\s*\d+\s*\)*\s*)*)\s*$
     public static boolean isValidExpression(String expr) {
         // Elimina espacios
         expr = expr.replaceAll("\\s+", "");
